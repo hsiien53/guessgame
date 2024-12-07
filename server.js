@@ -1,13 +1,12 @@
-const http = require('http');
 const express = require('express');
 const socketIo = require('socket.io');
 
 const app = express();
-const server = http.createServer(app);
+const server = require('http').Server(app);
 const io = socketIo(server);
 
 let players = [];
-let wordToDraw = '樹';
+let wordToDraw = '樹';  // 假設的畫題，這可以是隨機的
 
 app.use(express.static('public'));
 
@@ -40,7 +39,7 @@ io.on('connection', (socket) => {
   });
 });
 
-// 更改為Vercel支持的方式
+// 必須將伺服器函數導出，以便 Vercel 認識它
 module.exports = (req, res) => {
   server.emit('request', req, res);
 };
