@@ -7,12 +7,7 @@
   <script src="/socket.io/socket.io.js"></script>
   <script src="client.js" defer></script>
   <style>
-    body {
-      font-family: Arial, sans-serif;
-      text-align: center;
-      padding: 20px;
-    }
-    #game-screen, #wait-screen {
+    #room-screen, #game-screen {
       display: none;
     }
     canvas {
@@ -21,25 +16,27 @@
   </style>
 </head>
 <body>
-  <h1>Guess Game</h1>
-
   <!-- 登入畫面 -->
   <div id="login-screen">
-    <h2>歡迎來到猜畫遊戲</h2>
-    <button onclick="startGame()">開始遊戲</button>
+    <h1>Guess Game</h1>
+    <input id="room-id" placeholder="輸入房間名稱">
+    <input id="player-name" placeholder="輸入玩家名稱">
+    <button id="join-room-btn">加入房間</button>
   </div>
 
-  <!-- 等待畫面 -->
-  <div id="wait-screen">
-    <h2>等待另一位玩家加入...</h2>
+  <!-- 房間畫面 -->
+  <div id="room-screen">
+    <h2>房間</h2>
+    <ul id="player-list"></ul>
+    <button id="start-game-btn" style="display: none;">開始遊戲</button>
   </div>
 
   <!-- 遊戲畫面 -->
   <div id="game-screen">
-    <h2 id="turn-message"></h2>
     <div id="word-to-draw"></div>
     <canvas id="drawing-canvas" width="500" height="500"></canvas>
-    <button onclick="sendGuess(prompt('你猜是什麼？'));">提交猜測</button>
+    <input id="guess-input" placeholder="猜測答案">
+    <button id="guess-btn">提交猜測</button>
   </div>
 </body>
 </html>

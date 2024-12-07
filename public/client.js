@@ -1,93 +1,110 @@
-const socket = io(); // 連接到伺服器
+const socket = io();
 
+document.getElementById('join-room-btn').addEventListener('click', () => {
+  const roomId = document.getElementById('room-id').value.trim();
+  const playerName = document.getElementById('player-name').value.trim();
+
+  if (roomId && playerName) {
+    socket.emit('joinRoom', roomId, playerName);
+    document.getElementById('login-screen').style.display = 'none';
+    document.getElementById('room-screen').style.display = 'block';
+  } else {
+    alert('請輸入房間名稱和玩家名稱！');
+  }
+});
+
+document.getElementById('start-game-btn').addEventListener('click', () => {
+  const roomId = document.getElementById('room-id').value.trim();
+  socket.emit('startGame', roomId);
+});
+
+socket.on('updatePlayers', (players) => {
+  const playerList = document.getElementById('player-list');
+  playerList.innerHTML = ''; // 清空玩家列表
+  players.forEach(player => {
+    const listItem = document.createElement('li');
+    listItem.textContent = player.name;
+    playerList.appendChild(listItem);
+  });
+});
+
+socket.on('isRoomOwner', () => {
+  document.getElementById('start-game-btn').style.display = 'block';
+});
+
+socket.on('gameStarted', ({ drawer, word }) => {
+  alert(`${drawer.name} 是畫畫者，準備開始遊戲！`);
+
+  if (socket.id === drawer.id) {
+    document.getElementById('word-to-draw').innerText = `你的題目是：${word}`;
+    enableDrawing(); // 只有畫畫者能畫
+  } else {
+    document.getElementById('word-to-draw').innerText = '';
+    disableDrawing(); // 禁止其他人畫
+  }
+
+  document.getElementById('room-screen').style.display = 'none';
+  document.getElementById('game-screen').style.display = 'block';
+});
+
+// 繪圖相關
 const canvas = document.getElementById('drawing-canvas');
-const ctx = canvas ? canvas.getContext('2d') : null;
-let isDrawing = false;
-let isDrawer = false; // 用於區分是否是畫畫者
+const ctx = canvas.getContext('2d');
+let drawing = false;
+let lastPos = null;
 
-// 初始化畫布事件
-if (canvas) {
+function enableDrawing() {
   canvas.addEventListener('mousedown', startDrawing);
-  canvas.addEventListener('mousemove', draw);
   canvas.addEventListener('mouseup', stopDrawing);
-  canvas.addEventListener('mouseout', stopDrawing);
+  canvas.addEventListener('mousemove', draw);
 }
 
-function startDrawing(event) {
-  if (!isDrawer) return; // 只有畫畫者能畫
-  isDrawing = true;
-  ctx.beginPath();
-  ctx.moveTo(event.offsetX, event.offsetY);
+function disableDrawing() {
+  canvas.removeEventListener('mousedown', startDrawing);
+  canvas.removeEventListener('mouseup', stopDrawing);
+  canvas.removeEventListener('mousemove', draw);
 }
 
-function draw(event) {
-  if (!isDrawing || !isDrawer) return;
-  ctx.lineTo(event.offsetX, event.offsetY);
-  ctx.stroke();
-
-  // 傳送畫畫數據到伺服器
-  const drawData = {
-    x: event.offsetX,
-    y: event.offsetY,
-    type: 'draw',
-  };
-  socket.emit('draw', drawData);
+function startDrawing(e) {
+  drawing = true;
+  lastPos = { x: e.offsetX, y: e.offsetY };
 }
 
 function stopDrawing() {
-  if (isDrawing) {
-    isDrawing = false;
-    ctx.closePath();
-  }
+  drawing = false;
+  lastPos = null;
 }
 
-// 當伺服器發送畫畫數據
+function draw(e) {
+  if (!drawing) return;
+
+  const currentPos = { x: e.offsetX, y: e.offsetY };
+  drawLine(lastPos, currentPos);
+  socket.emit('draw', document.getElementById('room-id').value, { start: lastPos, end: currentPos });
+  lastPos = currentPos;
+}
+
+function drawLine(start, end) {
+  if (!start || !end) return;
+  ctx.beginPath();
+  ctx.moveTo(start.x, start.y);
+  ctx.lineTo(end.x, end.y);
+  ctx.stroke();
+}
+
 socket.on('draw', (data) => {
-  if (data.type === 'draw') {
-    ctx.lineTo(data.x, data.y);
-    ctx.stroke();
+  drawLine(data.start, data.end);
+});
+
+// 猜測功能
+document.getElementById('guess-btn').addEventListener('click', () => {
+  const guess = document.getElementById('guess-input').value.trim();
+  const roomId = document.getElementById('room-id').value.trim();
+  if (guess) {
+    socket.emit('guess', roomId, guess);
+    document.getElementById('guess-input').value = ''; // 清空輸入框
   }
 });
 
-// 設置角色身份
-socket.on('setDrawer', () => {
-  isDrawer = true;
-  document.getElementById('login-screen').style.display = 'none';
-  document.getElementById('game-screen').style.display = 'block';
-});
-
-socket.on('setGuesser', () => {
-  isDrawer = false;
-  document.getElementById('login-screen').style.display = 'none';
-  document.getElementById('game-screen').style.display = 'block';
-  document.getElementById('word-to-draw').style.display = 'none'; // 猜測者看不到字詞
-});
-
-// 顯示角色提示
-socket.on('turn', (message) => {
-  document.getElementById('turn-message').innerText = message;
-});
-
-// 顯示畫畫者的字詞
-socket.on('setWordToDraw', (word) => {
-  if (isDrawer) {
-    document.getElementById('word-to-draw').innerText = `請畫出: ${word}`;
-  }
-});
-
-// 處理猜測結果
 socket.on('correctGuess', (message) => alert(message));
 socket.on('incorrectGuess', (message) => alert(message));
-
-function sendGuess(guess) {
-  if (!isDrawer) {
-    socket.emit('guess', guess);
-  } else {
-    alert('你是畫畫者，不能猜測！');
-  }
-}
-
-function startGame() {
-  document.getElementById('login-screen').style.display = 'none';
-  document.getElementById('wait-screen').style.display = 'block';
-}
