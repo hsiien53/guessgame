@@ -12,38 +12,34 @@
       text-align: center;
       padding: 20px;
     }
-    #game-screen, #guess-screen {
+    #game-screen, #wait-screen {
       display: none;
     }
-    #drawing-canvas {
+    canvas {
       border: 1px solid black;
-    }
-    #turn-message {
-      font-size: 1.5em;
-      margin-bottom: 20px;
-    }
-    #word-to-draw {
-      font-size: 1.2em;
-      margin-top: 10px;
     }
   </style>
 </head>
 <body>
   <h1>Guess Game</h1>
 
-  <div id="turn-message"></div>
-  <div id="word-to-draw"></div>
+  <!-- 登入畫面 -->
+  <div id="login-screen">
+    <h2>歡迎來到猜畫遊戲</h2>
+    <button onclick="startGame()">開始遊戲</button>
+  </div>
 
-  <!-- 畫畫者畫畫的畫面 -->
+  <!-- 等待畫面 -->
+  <div id="wait-screen">
+    <h2>等待另一位玩家加入...</h2>
+  </div>
+
+  <!-- 遊戲畫面 -->
   <div id="game-screen">
+    <h2 id="turn-message"></h2>
+    <div id="word-to-draw"></div>
     <canvas id="drawing-canvas" width="500" height="500"></canvas>
-    <button onclick="sendGuess(prompt('猜一猜是什麼？'));">猜測</button>
+    <button onclick="sendGuess(prompt('你猜是什麼？'));">提交猜測</button>
   </div>
-
-  <!-- 猜測者的畫面 -->
-  <div id="guess-screen">
-    <p>請等待畫畫者畫畫...</p>
-  </div>
-
 </body>
 </html>

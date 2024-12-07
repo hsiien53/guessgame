@@ -7,44 +7,45 @@ const server = http.createServer(app);
 const io = socketIo(server);
 
 let players = [];
-let wordToDraw = '樹';  // 假設這是畫畫的字詞
+let wordToDraw = '樹'; // 要畫的字詞
 
-app.use(express.static('public'));  // 提供靜態檔案
+app.use(express.static('public'));
 
-// 當有玩家連接時
 io.on('connection', (socket) => {
   console.log('A user connected:', socket.id);
   players.push(socket);
 
-  // 當有兩個玩家時開始遊戲
+  // 如果兩個玩家都連接了，分配角色
   if (players.length === 2) {
     players[0].emit('turn', '你是畫畫的玩家！');
     players[0].emit('setDrawer');
     players[1].emit('turn', '你是猜畫的玩家！');
+    players[1].emit('setGuesser');
     players[0].emit('setWordToDraw', wordToDraw);
   }
 
-  // 當玩家開始畫畫時，將畫的資料發送給其他玩家
+  // 處理畫畫數據
   socket.on('draw', (data) => {
-    socket.broadcast.emit('draw', data);
+    socket.broadcast.emit('draw', data); // 廣播畫畫數據給其他玩家
   });
 
-  // 當玩家猜測字詞時
+  // 處理猜測
   socket.on('guess', (guess) => {
     if (guess === wordToDraw) {
-      io.emit('correctGuess', '猜對了！');
+      io.emit('correctGuess', '猜對了！遊戲結束！');
     } else {
       io.emit('incorrectGuess', '猜錯了，繼續猜！');
     }
   });
 
-  // 當玩家離開時，移除玩家
+  // 玩家斷線
   socket.on('disconnect', () => {
     console.log('A user disconnected:', socket.id);
     players = players.filter(player => player.id !== socket.id);
   });
 });
 
+// 啟動伺服器
 const PORT = process.env.PORT || 3000;
 server.listen(PORT, () => {
   console.log(`Server is running on port ${PORT}`);
