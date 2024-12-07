@@ -1,48 +1,41 @@
-const express = require('express');
-const http = require('http');
-const socketIo = require('socket.io');
+const socket = io();
 
-const app = express();
-const server = http.createServer(app);
-const io = socketIo(server);
+// 顯示登錄畫面
+document.getElementById('login-screen').style.display = 'block';
+document.getElementById('game-screen').style.display = 'none';
 
-let players = [];
-let wordToDraw = '樹';
+let isDrawer = false;
 
-app.use(express.static('public'));
-
-io.on('connection', (socket) => {
-  console.log('A user connected:', socket.id);
-  players.push(socket);
-
-  if (players.length === 2) {
-    players[0].emit('turn', '你是畫畫的玩家！');
-    players[0].emit('setDrawer');
-    players[1].emit('turn', '你是猜畫的玩家！');
-    players[0].emit('setWordToDraw', wordToDraw);
-  }
-
-  socket.on('draw', (data) => {
-    socket.broadcast.emit('draw', data);
-  });
-
-  socket.on('guess', (guess) => {
-    if (guess === wordToDraw) {
-      io.emit('correctGuess', '猜對了！');
-    } else {
-      io.emit('incorrectGuess', '猜錯了，繼續猜！');
-    }
-  });
-
-  socket.on('disconnect', () => {
-    console.log('A user disconnected:', socket.id);
-    players = players.filter(player => player.id !== socket.id);
-  });
+socket.on('turn', (message) => {
+  alert(message);
 });
 
-// Render 使用 `PORT` 環境變數來設定端口
-const PORT = process.env.PORT || 3000;
+socket.on('setDrawer', () => {
+  isDrawer = true;
+  document.getElementById('game-screen').style.display = 'block';
+  document.getElementById('login-screen').style.display = 'none';
+  // 讓畫家開始畫畫
+});
 
-server.listen(PORT, () => {
-  console.log(`Server is running on port ${PORT}`);
+socket.on('setWordToDraw', (word) => {
+  alert(`你要畫的字是: ${word}`);
+  // 顯示畫圖區域
+});
+
+// 當玩家開始畫畫時，將畫筆的資料發送給後端
+function sendDrawingData(data) {
+  socket.emit('draw', data);
+}
+
+// 玩家猜測字詞
+function sendGuess(guess) {
+  socket.emit('guess', guess);
+}
+
+socket.on('correctGuess', (message) => {
+  alert(message);
+});
+
+socket.on('incorrectGuess', (message) => {
+  alert(message);
 });
