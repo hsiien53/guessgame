@@ -55,6 +55,14 @@ io.on('connection', (socket) => {
     }
   });
 
+  socket.on('clearCanvas', (roomId) => {
+    const room = rooms[roomId];
+    if (room && room.drawer.id === socket.id) {
+      // 只有畫畫者才能清除畫布
+      io.to(roomId).emit('clearCanvas');
+    }
+  });
+
   socket.on('guess', (roomId, guess) => {
     const room = rooms[roomId];
     if (room && room.word === guess) {

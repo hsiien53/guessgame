@@ -38,9 +38,11 @@ socket.on('gameStarted', ({ drawer, word }) => {
   if (socket.id === drawer.id) {
     document.getElementById('word-to-draw').innerText = `你的題目是：${word}`;
     enableDrawing(); // 只有畫畫者能畫
+    document.getElementById('clear-btn').style.display = 'block';
   } else {
     document.getElementById('word-to-draw').innerText = '';
     disableDrawing(); // 禁止其他人畫
+    document.getElementById('clear-btn').style.display = 'none';
   }
 
   document.getElementById('room-screen').style.display = 'none';
@@ -80,7 +82,8 @@ function draw(e) {
 
   const currentPos = { x: e.offsetX, y: e.offsetY };
   drawLine(lastPos, currentPos);
-  socket.emit('draw', document.getElementById('room-id').value, { start: lastPos, end: currentPos });
+  const roomId = document.getElementById('room-id').value.trim();
+  socket.emit('draw', roomId, { start: lastPos, end: currentPos });
   lastPos = currentPos;
 }
 
@@ -94,6 +97,15 @@ function drawLine(start, end) {
 
 socket.on('draw', (data) => {
   drawLine(data.start, data.end);
+});
+
+document.getElementById('clear-btn').addEventListener('click', () => {
+  const roomId = document.getElementById('room-id').value.trim();
+  socket.emit('clearCanvas', roomId);
+});
+
+socket.on('clearCanvas', () => {
+  ctx.clearRect(0, 0, canvas.width, canvas.height);
 });
 
 // 猜測功能
