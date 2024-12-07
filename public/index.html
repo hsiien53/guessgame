@@ -3,62 +3,47 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>你畫我猜</title>
+  <title>Guess Game</title>
+  <script src="/socket.io/socket.io.js"></script>
+  <script src="client.js" defer></script>
   <style>
     body {
       font-family: Arial, sans-serif;
       text-align: center;
-      margin: 20px;
+      padding: 20px;
     }
-    canvas {
-      border: 1px solid black;
-      background-color: #f0f0f0;
-    }
-    #game-status {
-      margin-top: 20px;
-      font-size: 18px;
-      font-weight: bold;
-    }
-    #guess-input {
-      margin-top: 10px;
-    }
-    #guess {
-      padding: 5px;
-      font-size: 16px;
-    }
-    button {
-      padding: 5px 10px;
-      font-size: 16px;
-      margin-left: 5px;
-    }
-    #game-screen {
+    #game-screen, #guess-screen {
       display: none;
+    }
+    #drawing-canvas {
+      border: 1px solid black;
+    }
+    #turn-message {
+      font-size: 1.5em;
+      margin-bottom: 20px;
+    }
+    #word-to-draw {
+      font-size: 1.2em;
+      margin-top: 10px;
     }
   </style>
 </head>
 <body>
-  <h1>你畫我猜</h1>
+  <h1>Guess Game</h1>
 
-  <!-- 登入畫面 -->
-  <div id="login-screen">
-    <h2>請輸入你的名字</h2>
-    <form id="login-form">
-      <input type="text" id="username" placeholder="你的名字" required />
-      <button type="submit">登入</button>
-    </form>
-  </div>
+  <div id="turn-message"></div>
+  <div id="word-to-draw"></div>
 
-  <!-- 遊戲畫面 -->
+  <!-- 畫畫者畫畫的畫面 -->
   <div id="game-screen">
-    <canvas id="gameCanvas" width="800" height="600"></canvas>
-    <div id="game-status">等待其他玩家加入遊戲...</div>
-    <div id="guess-input">
-      <input type="text" id="guess" placeholder="猜畫的東西..." />
-      <button onclick="sendGuess()">猜！</button>
-    </div>
+    <canvas id="drawing-canvas" width="500" height="500"></canvas>
+    <button onclick="sendGuess(prompt('猜一猜是什麼？'));">猜測</button>
   </div>
 
-  <script src="/socket.io/socket.io.js"></script>
-  <script src="client.js"></script>
+  <!-- 猜測者的畫面 -->
+  <div id="guess-screen">
+    <p>請等待畫畫者畫畫...</p>
+  </div>
+
 </body>
 </html>

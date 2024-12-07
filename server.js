@@ -1,21 +1,22 @@
 const express = require('express');
 const http = require('http');
-const socketIo = require('socket.io');  // 使用 socket.io 套件
+const socketIo = require('socket.io');
 
 const app = express();
-const server = http.createServer(app); // 創建 HTTP 伺服器
-const io = socketIo(server);  // 在伺服器上初始化 socket.io
+const server = http.createServer(app);
+const io = socketIo(server);
 
 let players = [];
-let wordToDraw = '樹';
+let wordToDraw = '樹';  // 假設這是畫畫的字詞
 
-app.use(express.static('public')); // 提供靜態文件
+app.use(express.static('public'));  // 提供靜態檔案
 
-// 監聽客戶端的 socket 連接
+// 當有玩家連接時
 io.on('connection', (socket) => {
   console.log('A user connected:', socket.id);
   players.push(socket);
 
+  // 當有兩個玩家時開始遊戲
   if (players.length === 2) {
     players[0].emit('turn', '你是畫畫的玩家！');
     players[0].emit('setDrawer');
@@ -23,12 +24,12 @@ io.on('connection', (socket) => {
     players[0].emit('setWordToDraw', wordToDraw);
   }
 
-  // 當收到畫圖資料時
+  // 當玩家開始畫畫時，將畫的資料發送給其他玩家
   socket.on('draw', (data) => {
-    socket.broadcast.emit('draw', data); // 廣播畫圖資料給其他玩家
+    socket.broadcast.emit('draw', data);
   });
 
-  // 當收到猜測字詞時
+  // 當玩家猜測字詞時
   socket.on('guess', (guess) => {
     if (guess === wordToDraw) {
       io.emit('correctGuess', '猜對了！');
@@ -37,16 +38,14 @@ io.on('connection', (socket) => {
     }
   });
 
-  // 當玩家斷線時
+  // 當玩家離開時，移除玩家
   socket.on('disconnect', () => {
     console.log('A user disconnected:', socket.id);
     players = players.filter(player => player.id !== socket.id);
   });
 });
 
-// 使用 Render 提供的端口環境變數
 const PORT = process.env.PORT || 3000;
-
 server.listen(PORT, () => {
   console.log(`Server is running on port ${PORT}`);
 });
