@@ -13,6 +13,7 @@ app.use(express.static('public'));
 io.on('connection', (socket) => {
   console.log(`玩家 ${socket.id} 已連接`);
 
+  // 玩家加入房間
   socket.on('joinRoom', (roomId, playerName) => {
     if (!rooms[roomId]) {
       rooms[roomId] = { players: [], gameStarted: false };
@@ -30,6 +31,7 @@ io.on('connection', (socket) => {
     }
   });
 
+  // 開始遊戲
   socket.on('startGame', (roomId) => {
     const room = rooms[roomId];
     if (room && room.players.length > 1) {
@@ -43,11 +45,12 @@ io.on('connection', (socket) => {
       // 發送遊戲開始的訊息，並且給畫畫者題目
       io.to(roomId).emit('gameStarted', {
         drawer: room.drawer,
-        word: room.drawer.id === socket.id ? room.word : null,
+        word: room.drawer.id === socket.id ? room.word : null, // 只有畫畫者可以看到題目
       });
     }
   });
 
+  // 畫畫
   socket.on('draw', (roomId, data) => {
     const room = rooms[roomId];
     if (room && room.drawer.id === socket.id) {
@@ -56,6 +59,7 @@ io.on('connection', (socket) => {
     }
   });
 
+  // 清除畫布
   socket.on('clearCanvas', (roomId) => {
     const room = rooms[roomId];
     if (room && room.drawer.id === socket.id) {
@@ -64,6 +68,7 @@ io.on('connection', (socket) => {
     }
   });
 
+  // 猜測字詞
   socket.on('guess', (roomId, guess) => {
     const room = rooms[roomId];
     if (room && room.word === guess) {
@@ -73,6 +78,7 @@ io.on('connection', (socket) => {
     }
   });
 
+  // 斷開連接
   socket.on('disconnect', () => {
     for (const roomId in rooms) {
       const room = rooms[roomId];
