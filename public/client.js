@@ -17,6 +17,8 @@ document.getElementById('login-form').addEventListener('submit', (e) => {
   const username = document.getElementById('username').value;
   if (username) {
     socket.emit('login', username);  // 發送登入請求到伺服器
+
+    // 設置登入後顯示的遊戲畫面
     document.getElementById('login-screen').style.display = 'none';  // 隱藏登入畫面
     document.getElementById('game-screen').style.display = 'block';  // 顯示遊戲畫面
   }
