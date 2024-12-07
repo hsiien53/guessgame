@@ -13,6 +13,21 @@
     canvas {
       border: 1px solid black;
     }
+    .color-btn {
+      width: 30px;
+      height: 30px;
+      margin: 5px;
+      border-radius: 50%;
+      cursor: pointer;
+    }
+    #brush-icon {
+      width: 30px;
+      height: 30px;
+      margin-left: 20px;
+    }
+    #tool-options {
+      margin-top: 10px;
+    }
   </style>
 </head>
 <body>
@@ -35,6 +50,22 @@
   <div id="game-screen">
     <div id="word-to-draw"></div>
     <canvas id="drawing-canvas" width="500" height="500"></canvas>
+
+    <!-- 顏色選擇 -->
+    <div>
+      <button class="color-btn" id="red" style="background-color: red;"></button>
+      <button class="color-btn" id="orange" style="background-color: orange;"></button>
+      <button class="color-btn" id="yellow" style="background-color: yellow;"></button>
+      <button class="color-btn" id="green" style="background-color: green;"></button>
+      <button class="color-btn" id="black" style="background-color: black;"></button>
+      <img id="brush-icon" src="https://upload.wikimedia.org/wikipedia/commons/thumb/6/6d/Font_Awesome_5_regular_brush.svg/1024px-Font_Awesome_5_regular_brush.svg.png" alt="brush icon">
+    </div>
+
+    <!-- 工具選擇 -->
+    <div id="tool-options">
+      <button id="eraser-btn">橡皮擦</button>
+    </div>
+
     <input id="guess-input" placeholder="猜測答案">
     <button id="guess-btn">提交猜測</button>
     <button id="clear-btn" style="display: none;">清除畫布</button>

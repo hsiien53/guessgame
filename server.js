@@ -8,9 +8,6 @@ const io = socketIo(server);
 
 let rooms = {};
 
-// 隨機題目庫
-const words = ['樹', '房子', '貓', '狗', '汽車', '電腦', '蘋果', '魚', '電視', '桌子'];
-
 app.use(express.static('public'));
 
 io.on('connection', (socket) => {
@@ -41,26 +38,12 @@ io.on('connection', (socket) => {
       // 隨機選擇畫畫者
       const drawerIndex = Math.floor(Math.random() * room.players.length);
       room.drawer = room.players[drawerIndex];
-
-      // 隨機選擇一個題目
-      const randomWord = words[Math.floor(Math.random() * words.length)];
-      room.word = randomWord;
+      room.word = '樹'; // 可以改為隨機題目生成
 
       // 發送遊戲開始的訊息，並且給畫畫者題目
-      room.players.forEach(player => {
-        if (player.id === room.drawer.id) {
-          // 只有畫畫者能看到題目
-          io.to(player.id).emit('gameStarted', {
-            drawer: room.drawer,
-            word: room.word,  // 隨機選擇的題目
-          });
-        } else {
-          // 非畫畫者看不到題目
-          io.to(player.id).emit('gameStarted', {
-            drawer: room.drawer,
-            word: null,  // 非畫畫者不顯示題目
-          });
-        }
+      io.to(roomId).emit('gameStarted', {
+        drawer: room.drawer,
+        word: room.drawer.id === socket.id ? room.word : null,
       });
     }
   });
@@ -71,6 +54,11 @@ io.on('connection', (socket) => {
       // 只有畫畫者才能畫畫
       socket.to(roomId).emit('draw', data);
     }
+  });
+
+  socket.on('colorChanged', (roomId, color) => {
+    // 當顏色變更時，廣播顏色給其他玩家
+    socket.to(roomId).emit('colorChanged', color);
   });
 
   socket.on('clearCanvas', (roomId) => {
