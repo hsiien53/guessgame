@@ -1,7 +1,7 @@
 {
+  "name": "guessgame",
+  "version": "1.0.0",
   "dependencies": {
-    "socket.io": "^4.0.0",
-    "express": "^4.0.0",
-    // 其他依賴
+    "express": "^4.17.1"
   }
 }
