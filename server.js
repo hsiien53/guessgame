@@ -40,6 +40,7 @@ io.on('connection', (socket) => {
       room.drawer = room.players[drawerIndex];
       room.word = '樹'; // 可以改為隨機題目生成
 
+      // 發送遊戲開始的訊息，並且給畫畫者題目
       io.to(roomId).emit('gameStarted', {
         drawer: room.drawer,
         word: room.drawer.id === socket.id ? room.word : null,
