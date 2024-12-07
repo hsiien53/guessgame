@@ -3,6 +3,10 @@ const socket = io();
 // 獲取畫布元素
 const canvas = document.getElementById('gameCanvas');
 const ctx = canvas.getContext('2d');
+const socket = io({
+  transports: ['websocket', 'polling']  // 設置 WebSocket 傳輸或輪詢
+});
+
 let isDrawer = false;  // 確認玩家是否是畫家
 let drawing = false;   // 確認是否正在繪製
 let wordToDraw = '';  // 設定待畫的詞語

@@ -9,7 +9,7 @@ const io = socketIo(server);
 let players = [];
 let wordToDraw = '樹';  // 假設的畫題，這可以是隨機的
 
-// 提供靜態檔案
+// 提供靜態檔案 (將 public 資料夾中的檔案作為靜態資源)
 app.use(express.static('public'));
 
 // 伺服器設定
@@ -46,7 +46,8 @@ io.on('connection', (socket) => {
   });
 });
 
-// 伺服器監聽端口
-server.listen(3000, () => {
-  console.log('Server is running on port 3000');
+// 設定伺服器端口，這裡使用 process.env.PORT 來支持 Vercel 等雲平台
+const port = process.env.PORT || 3000;  // 若有 Vercel 提供的 PORT，使用它，否則使用 3000
+server.listen(port, () => {
+  console.log(`Server is running on port ${port}`);
 });
