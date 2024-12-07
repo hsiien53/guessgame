@@ -1,12 +1,13 @@
 const express = require('express');
+const http = require('http');
 const socketIo = require('socket.io');
 
 const app = express();
-const server = require('http').Server(app);
+const server = http.createServer(app);
 const io = socketIo(server);
 
 let players = [];
-let wordToDraw = '樹';  // 假設的畫題，這可以是隨機的
+let wordToDraw = '樹';
 
 app.use(express.static('public'));
 
@@ -39,7 +40,9 @@ io.on('connection', (socket) => {
   });
 });
 
-// 必須將伺服器函數導出，以便 Vercel 認識它
-module.exports = (req, res) => {
-  server.emit('request', req, res);
-};
+// Render 使用 `PORT` 環境變數來設定端口
+const PORT = process.env.PORT || 3000;
+
+server.listen(PORT, () => {
+  console.log(`Server is running on port ${PORT}`);
+});
