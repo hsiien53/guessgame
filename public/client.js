@@ -36,12 +36,12 @@ socket.on('gameStarted', ({ drawer, word }) => {
   alert(`${drawer.name} 是畫畫者，準備開始遊戲！`);
 
   if (socket.id === drawer.id) {
-    // 畫畫者可以看到題目
+    // 畫畫者能看到題目
     document.getElementById('word-to-draw').innerText = `你的題目是：${word}`;
     enableDrawing(); // 只有畫畫者能畫
     document.getElementById('clear-btn').style.display = 'block';
   } else {
-    // 其他玩家看不到題目
+    // 非畫畫者看不到題目
     document.getElementById('word-to-draw').innerText = '';
     disableDrawing(); // 禁止其他人畫
     document.getElementById('clear-btn').style.display = 'none';
