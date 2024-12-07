@@ -8,6 +8,9 @@ const io = socketIo(server);
 
 let rooms = {};
 
+// 隨機題目庫
+const words = ['樹', '房子', '貓', '狗', '汽車', '電腦', '蘋果', '魚', '電視', '桌子'];
+
 app.use(express.static('public'));
 
 io.on('connection', (socket) => {
@@ -38,7 +41,10 @@ io.on('connection', (socket) => {
       // 隨機選擇畫畫者
       const drawerIndex = Math.floor(Math.random() * room.players.length);
       room.drawer = room.players[drawerIndex];
-      room.word = '樹'; // 可以改為隨機題目生成
+
+      // 隨機選擇一個題目
+      const randomWord = words[Math.floor(Math.random() * words.length)];
+      room.word = randomWord;
 
       // 發送遊戲開始的訊息，並且給畫畫者題目
       room.players.forEach(player => {
@@ -46,7 +52,7 @@ io.on('connection', (socket) => {
           // 只有畫畫者能看到題目
           io.to(player.id).emit('gameStarted', {
             drawer: room.drawer,
-            word: room.word,  // 這裡才會傳送題目給畫畫者
+            word: room.word,  // 隨機選擇的題目
           });
         } else {
           // 非畫畫者看不到題目
