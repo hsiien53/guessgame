@@ -30,28 +30,7 @@ io.on('connection', (socket) => {
       socket.emit('isRoomOwner');
     }
   });
-/*
-  socket.on('startGame', (roomId) => {
-    const room = rooms[roomId];
-    if (room && room.players.length > 1) {
-      room.gameStarted = true;
 
-      // 隨機選擇畫畫者
-      const drawerIndex = Math.floor(Math.random() * room.players.length);
-      room.drawer = room.players[drawerIndex];
-      // 隨機選擇題目
-      const words = ['apple', 'banana', 'car', 'dog', 'cat', 'tree', 'house', 'sun', 'moon', 'flower'];
-      room.word = words[Math.floor(Math.random() * words.length)];
-
-      // 發送遊戲開始的訊息，並且給畫畫者題目
-      io.to(roomId).emit('gameStarted', {
-        drawer: room.drawer,
-        word: room.drawer.id === socket.id ? room.word : null,  // 只有畫家知道題目
-      });
-    }
-  });
-
-  */
 
   socket.on('startGame', (roomId) => {
   const room = rooms[roomId];
@@ -77,14 +56,28 @@ io.on('connection', (socket) => {
   socket.on('draw', (roomId, data) => {
     const room = rooms[roomId];
     if (room && room.drawer.id === socket.id) {
+
+      // 只有畫家能畫畫
+    socket.to(roomId).emit('draw', {
+      start: data.start,
+      end: data.end,
+      color: room.drawer.color, // 傳送畫家的顏色
+      eraser: data.eraser
+    });
       // 只有畫畫者才能畫畫
-      socket.to(roomId).emit('draw', data);
+     // socket.to(roomId).emit('draw', data);
+
+
     }
   });
 
   socket.on('colorChanged', (roomId, color) => {
   const room = rooms[roomId];
   if (room && room.drawer.id === socket.id) {
+
+    // 更新畫家的顏色
+    room.drawer.color = color;
+
     // 當畫家變更顏色時，廣播顏色給其他玩家
     socket.to(roomId).emit('colorChanged', color);
   }

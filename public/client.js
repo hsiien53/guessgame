@@ -35,28 +35,8 @@ socket.on('updatePlayers', (players) => {
 socket.on('isRoomOwner', () => {
   document.getElementById('start-game-btn').style.display = 'block';
 });
-/*
-// 當遊戲開始
-socket.on('gameStarted', ({ drawer, word }) => {
-  alert(`${drawer.name} 是畫家，準備開始遊戲！`);
-
-  if (socket.id === drawer.id) {
-    document.getElementById('word-to-draw').innerText = `你的題目是：${word}`; // 顯示畫家的題目
-    enableDrawing(); // 只有畫家能畫
-    document.getElementById('clear-btn').style.display = 'block'; // 顯示清除畫布按鈕
-  } else {
-    document.getElementById('word-to-draw').innerText = ''; // 其他玩家看不到題目
-    disableDrawing(); // 禁止其他玩家作畫
-    document.getElementById('clear-btn').style.display = 'none'; // 隱藏清除畫布按鈕
-  }
-
-  document.getElementById('room-screen').style.display = 'none'; // 隱藏房間畫面
-  document.getElementById('game-screen').style.display = 'block'; // 顯示遊戲畫面
-});
-*/
 
 
-// 當遊戲開始
 // 當遊戲開始
 socket.on('gameStarted', ({ drawer, word }) => {
   alert(`${drawer.name} 是畫家，準備開始遊戲！`);
@@ -68,10 +48,6 @@ socket.on('gameStarted', ({ drawer, word }) => {
     // 顯示畫畫工具
     document.getElementById('tool-options').style.display = 'block';
     document.getElementById('color-palette').style.display = 'block';
-    
-    // 隱藏猜測輸入框和按鈕
-    document.getElementById('guess-input').style.display = 'none';
-    document.getElementById('guess-btn').style.display = 'none';
   } else {
     document.getElementById('word-to-draw').innerText = ''; // 其他玩家看不到題目
     disableDrawing(); // 禁止其他玩家作畫
@@ -79,35 +55,13 @@ socket.on('gameStarted', ({ drawer, word }) => {
     // 隱藏畫畫工具
     document.getElementById('tool-options').style.display = 'none';
     document.getElementById('color-palette').style.display = 'none';
-
-    // 顯示猜測輸入框和按鈕
-    document.getElementById('guess-input').style.display = 'block';
-    document.getElementById('guess-btn').style.display = 'block';
   }
 
   document.getElementById('room-screen').style.display = 'none'; // 隱藏房間畫面
   document.getElementById('game-screen').style.display = 'block'; // 顯示遊戲畫面
 });
 
-
-/*socket.on('gameStarted', ({ drawer, word }) => {
-  alert(`${drawer.name} 是畫家，準備開始遊戲！`);
-
-  if (socket.id === drawer.id) {
-    document.getElementById('word-to-draw').innerText = `你的題目是：${word}`; // 顯示畫家的題目
-    enableDrawing(); // 只有畫家能畫
-    document.getElementById('clear-btn').style.display = 'block'; // 顯示清除畫布按鈕
-  } else {
-    document.getElementById('word-to-draw').innerText = ''; // 其他玩家看不到題目
-    disableDrawing(); // 禁止其他玩家作畫
-    document.getElementById('clear-btn').style.display = 'none'; // 隱藏清除畫布按鈕
-  }
-
-  document.getElementById('room-screen').style.display = 'none'; // 隱藏房間畫面
-  document.getElementById('game-screen').style.display = 'block'; // 顯示遊戲畫面
-});
-*/
-
+/*
 
 // 顏色選擇
 document.getElementById('red').addEventListener('click', () => {
@@ -125,6 +79,81 @@ document.getElementById('green').addEventListener('click', () => {
 document.getElementById('black').addEventListener('click', () => {
   currentColor = 'black';
 });
+
+
+*/
+
+
+
+
+
+// 當接收到顏色變更事件時，更新畫布顏色
+socket.on('colorChanged', (color) => {
+  currentColor = color;  // 更新當前顏色
+  // 更新畫筆顏色
+  ctx.strokeStyle = currentColor;
+});
+
+// 顏色選擇事件
+document.getElementById('red').addEventListener('click', () => {
+  currentColor = 'red';
+  const roomId = document.getElementById('room-id').value.trim();
+  socket.emit('colorChanged', roomId, currentColor);  // 發送顏色變更到伺服器
+});
+
+document.getElementById('orange').addEventListener('click', () => {
+  currentColor = 'orange';
+  const roomId = document.getElementById('room-id').value.trim();
+  socket.emit('colorChanged', roomId, currentColor);  // 發送顏色變更到伺服器
+});
+
+document.getElementById('yellow').addEventListener('click', () => {
+  currentColor = 'yellow';
+  const roomId = document.getElementById('room-id').value.trim();
+  socket.emit('colorChanged', roomId, currentColor);  // 發送顏色變更到伺服器
+});
+
+document.getElementById('green').addEventListener('click', () => {
+  currentColor = 'green';
+  const roomId = document.getElementById('room-id').value.trim();
+  socket.emit('colorChanged', roomId, currentColor);  // 發送顏色變更到伺服器
+});
+
+document.getElementById('black').addEventListener('click', () => {
+  currentColor = 'black';
+  const roomId = document.getElementById('room-id').value.trim();
+  socket.emit('colorChanged', roomId, currentColor);  // 發送顏色變更到伺服器
+});
+
+// 當接收到畫圖事件時，使用伺服器提供的顏色繪製
+socket.on('draw', (data) => {
+  if (data.eraser) {
+    erase(data.end);
+  } else {
+    drawLine(data.start, data.end, data.color);  // 使用伺服器提供的顏色
+  }
+});
+
+// 繪圖函式，新增一個顏色參數來設定顏色
+function drawLine(start, end, color) {
+  if (!start || !end) return;
+  ctx.beginPath();
+  ctx.moveTo(start.x, start.y);
+  ctx.lineTo(end.x, end.y);
+  ctx.strokeStyle = color;  // 設定顏色為伺服器提供的顏色
+  ctx.lineWidth = 5;
+  ctx.stroke();
+}
+
+
+
+
+
+
+
+
+
+
 
 // 橡皮擦模式
 document.getElementById('eraser-btn').addEventListener('click', () => {
@@ -219,4 +248,3 @@ document.getElementById('guess-btn').addEventListener('click', () => {
 
 socket.on('correctGuess', (message) => alert(message));
 socket.on('incorrectGuess', (message) => alert(message));
-
