@@ -60,6 +60,7 @@ socket.on('gameStarted', ({ drawer, word }) => {
 socket.on('gameStarted', ({ drawer, word }) => {
   alert(`${drawer.name} 是畫家，準備開始遊戲！`);
 
+  // 根據玩家身份顯示/隱藏輸入框
   if (socket.id === drawer.id) {
     document.getElementById('word-to-draw').innerText = `你的題目是：${word}`; // 顯示畫家的題目
     enableDrawing(); // 只有畫家能畫
@@ -67,6 +68,9 @@ socket.on('gameStarted', ({ drawer, word }) => {
     // 顯示畫畫工具
     document.getElementById('tool-options').style.display = 'block';
     document.getElementById('color-palette').style.display = 'block';
+    
+    // 隱藏猜測輸入框
+    document.getElementById('guess-container').style.display = 'none';
   } else {
     document.getElementById('word-to-draw').innerText = ''; // 其他玩家看不到題目
     disableDrawing(); // 禁止其他玩家作畫
@@ -74,11 +78,15 @@ socket.on('gameStarted', ({ drawer, word }) => {
     // 隱藏畫畫工具
     document.getElementById('tool-options').style.display = 'none';
     document.getElementById('color-palette').style.display = 'none';
+    
+    // 顯示猜測輸入框
+    document.getElementById('guess-container').style.display = 'block';
   }
 
   document.getElementById('room-screen').style.display = 'none'; // 隱藏房間畫面
   document.getElementById('game-screen').style.display = 'block'; // 顯示遊戲畫面
 });
+
 
 /*socket.on('gameStarted', ({ drawer, word }) => {
   alert(`${drawer.name} 是畫家，準備開始遊戲！`);
@@ -179,6 +187,7 @@ function erase(position) {
   ctx.clearRect(position.x - 10, position.y - 10, 20, 20); // 用橡皮擦擦除畫布上的部分
 }
 
+
 socket.on('draw', (data) => {
   if (data.eraser) {
     erase(data.end);
@@ -207,7 +216,9 @@ document.getElementById('guess-btn').addEventListener('click', () => {
   }
 });
 
+
+
+
 socket.on('correctGuess', (message) => alert(message));
 socket.on('incorrectGuess', (message) => alert(message));
-
 
