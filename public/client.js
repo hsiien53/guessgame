@@ -34,54 +34,67 @@ socket.on('updatePlayers', (players) => {
 socket.on('isRoomOwner', () => {
   document.getElementById('start-game-btn').style.display = 'block';
 });
-
+/*
+// 當遊戲開始
 socket.on('gameStarted', ({ drawer, word }) => {
-  alert(`${drawer.name} 是畫畫者，準備開始遊戲！`);
+  alert(`${drawer.name} 是畫家，準備開始遊戲！`);
 
   if (socket.id === drawer.id) {
-    document.getElementById('word-to-draw').innerText = `你的題目是：${word}`;
-    enableDrawing(); // 只有畫畫者能畫
-    document.getElementById('clear-btn').style.display = 'block';
+    document.getElementById('word-to-draw').innerText = `你的題目是：${word}`; // 顯示畫家的題目
+    enableDrawing(); // 只有畫家能畫
+    document.getElementById('clear-btn').style.display = 'block'; // 顯示清除畫布按鈕
   } else {
-    document.getElementById('word-to-draw').innerText = '';
-    disableDrawing(); // 禁止其他人畫
-    document.getElementById('clear-btn').style.display = 'none';
+    document.getElementById('word-to-draw').innerText = ''; // 其他玩家看不到題目
+    disableDrawing(); // 禁止其他玩家作畫
+    document.getElementById('clear-btn').style.display = 'none'; // 隱藏清除畫布按鈕
   }
 
-  document.getElementById('room-screen').style.display = 'none';
-  document.getElementById('game-screen').style.display = 'block';
+  document.getElementById('room-screen').style.display = 'none'; // 隱藏房間畫面
+  document.getElementById('game-screen').style.display = 'block'; // 顯示遊戲畫面
 });
+*/
+
+
+// 當遊戲開始
+socket.on('gameStarted', ({ drawer, word }) => {
+  alert(`${drawer.name} 是畫家，準備開始遊戲！`);
+
+  if (socket.id === drawer.id) {
+    document.getElementById('word-to-draw').innerText = `你的題目是：${word}`; // 顯示畫家的題目
+    enableDrawing(); // 只有畫家能畫
+    document.getElementById('clear-btn').style.display = 'block'; // 顯示清除畫布按鈕
+  } else {
+    document.getElementById('word-to-draw').innerText = ''; // 其他玩家看不到題目
+    disableDrawing(); // 禁止其他玩家作畫
+    document.getElementById('clear-btn').style.display = 'none'; // 隱藏清除畫布按鈕
+  }
+
+  document.getElementById('room-screen').style.display = 'none'; // 隱藏房間畫面
+  document.getElementById('game-screen').style.display = 'block'; // 顯示遊戲畫面
+});
+
+
 
 // 顏色選擇
 document.getElementById('red').addEventListener('click', () => {
   currentColor = 'red';
-  document.getElementById('brush-icon').style.filter = 'invert(25%) sepia(81%) saturate(289%) hue-rotate(0deg) brightness(93%) contrast(88%)'; // 顯示紅色的畫筆
 });
 document.getElementById('orange').addEventListener('click', () => {
   currentColor = 'orange';
-  document.getElementById('brush-icon').style.filter = 'invert(22%) sepia(49%) saturate(533%) hue-rotate(5deg) brightness(87%) contrast(82%)'; // 顯示橙色的畫筆
 });
 document.getElementById('yellow').addEventListener('click', () => {
   currentColor = 'yellow';
-  document.getElementById('brush-icon').style.filter = 'invert(79%) sepia(99%) saturate(4200%) hue-rotate(4deg) brightness(108%) contrast(120%)'; // 顯示黃色的畫筆
 });
 document.getElementById('green').addEventListener('click', () => {
   currentColor = 'green';
-  document.getElementById('brush-icon').style.filter = 'invert(47%) sepia(60%) saturate(317%) hue-rotate(75deg) brightness(108%) contrast(96%)'; // 顯示綠色的畫筆
 });
 document.getElementById('black').addEventListener('click', () => {
   currentColor = 'black';
-  document.getElementById('brush-icon').style.filter = 'none'; // 顯示黑色的畫筆
 });
 
-// 切換到橡皮擦模式
+// 橡皮擦模式
 document.getElementById('eraser-btn').addEventListener('click', () => {
-  isEraserMode = !isEraserMode; // 切換橡皮擦模式
-  if (isEraserMode) {
-    document.getElementById('eraser-btn').style.backgroundColor = '#ddd'; // 顯示橡皮擦被選中
-  } else {
-    document.getElementById('eraser-btn').style.backgroundColor = ''; // 取消橡皮擦選中
-  }
+  isEraserMode = !isEraserMode; 
 });
 
 // 繪圖相關
@@ -118,9 +131,9 @@ function draw(e) {
   const currentPos = { x: e.offsetX, y: e.offsetY };
 
   if (isEraserMode) {
-    erase(currentPos); // 如果是橡皮擦模式，使用橡皮擦
+    erase(currentPos); // 使用橡皮擦
   } else {
-    drawLine(lastPos, currentPos); // 如果是畫筆模式，畫線
+    drawLine(lastPos, currentPos); // 畫畫
   }
 
   const roomId = document.getElementById('room-id').value.trim();
@@ -150,6 +163,7 @@ socket.on('draw', (data) => {
   }
 });
 
+// 清除畫布
 document.getElementById('clear-btn').addEventListener('click', () => {
   const roomId = document.getElementById('room-id').value.trim();
   socket.emit('clearCanvas', roomId);

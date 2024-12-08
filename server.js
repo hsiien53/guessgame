@@ -29,7 +29,7 @@ io.on('connection', (socket) => {
       socket.emit('isRoomOwner');
     }
   });
-
+/*
   socket.on('startGame', (roomId) => {
     const room = rooms[roomId];
     if (room && room.players.length > 1) {
@@ -38,15 +38,40 @@ io.on('connection', (socket) => {
       // 隨機選擇畫畫者
       const drawerIndex = Math.floor(Math.random() * room.players.length);
       room.drawer = room.players[drawerIndex];
-      room.word = '樹'; // 可以改為隨機題目生成
+      // 隨機選擇題目
+      const words = ['apple', 'banana', 'car', 'dog', 'cat', 'tree', 'house', 'sun', 'moon', 'flower'];
+      room.word = words[Math.floor(Math.random() * words.length)];
 
       // 發送遊戲開始的訊息，並且給畫畫者題目
       io.to(roomId).emit('gameStarted', {
         drawer: room.drawer,
-        word: room.drawer.id === socket.id ? room.word : null,
+        word: room.drawer.id === socket.id ? room.word : null,  // 只有畫家知道題目
       });
     }
   });
+
+  */
+
+  socket.on('startGame', (roomId) => {
+  const room = rooms[roomId];
+  if (room && room.players.length > 1) {
+    room.gameStarted = true;
+
+    // 隨機選擇畫畫者
+    const drawerIndex = Math.floor(Math.random() * room.players.length);
+    room.drawer = room.players[drawerIndex];
+    // 隨機選擇題目
+    const words = ['apple', 'banana', 'car', 'dog', 'cat', 'tree', 'house', 'sun', 'moon', 'flower'];
+    room.word = words[Math.floor(Math.random() * words.length)];
+
+    // 發送遊戲開始的訊息，並且給畫家題目
+    io.to(roomId).emit('gameStarted', {
+      drawer: room.drawer,
+      word: room.word,  // 所有玩家都能收到題目
+    });
+  }
+});
+
 
   socket.on('draw', (roomId, data) => {
     const room = rooms[roomId];

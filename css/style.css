@@ -1,0 +1,64 @@
+/* 設定背景顏色為蛋黃色 */
+body {
+  background-color: #fef2c0;
+  font-family: Arial, sans-serif;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
+  margin: 0;
+  flex-direction: column;
+}
+
+/* 設定標題框框 */
+#title {
+  font-size: 36px;
+  font-weight: bold;
+  padding: 20px;
+  background-color: #ffcc00;
+  border: 5px solid #f9a800;
+  border-radius: 10px;
+  margin-bottom: 20px;
+}
+
+/* 遊戲畫面置中 */
+#game-screen {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  width: 80%;
+  max-width: 800px;
+}
+
+/* 設定顏色選擇的按鈕 */
+.color-btn {
+  width: 30px;
+  height: 30px;
+  margin: 5px;
+  border-radius: 50%;
+  cursor: pointer;
+  border: none;
+}
+
+/* 顯示畫筆圖示 */
+#brush-icon {
+  width: 30px;
+  height: 30px;
+  margin-left: 20px;
+}
+
+/* 顯示工具選項 */
+#tool-options {
+  margin-top: 10px;
+}
+
+/* 隱藏畫面：加入房間畫面 */
+#room-screen {
+  display: none;
+}
+
+/* 隱藏清除畫布按鈕，只有畫家可見 */
+#clear-btn {
+  display: none;
+}
