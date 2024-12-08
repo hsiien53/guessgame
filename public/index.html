@@ -10,9 +10,58 @@
     #room-screen, #game-screen {
       display: none;
     }
-    canvas {
-      border: 1px solid black;
+
+    body {
+      background-color: #FFF8E1; /* 輕淡黃色背景 */
+      display: flex;
+      justify-content: center; /* 使內容置中 */
+      align-items: center; /* 垂直置中 */
+      height: 100vh; /* 使內容佔滿整個視窗 */
+      margin: 0;
     }
+
+    #login-screen {
+      text-align: center; /* 使文字置中 */
+      padding: 20px;
+      border: 2px solid #000; /* 邊框顏色為黑色 */
+      border-radius: 10px; /* 邊框圓角 */
+      width: 300px; /* 設定固定寬度 */
+      background-color: #fff; /* 背景白色 */
+    }
+
+    #login-screen h1 {
+      font-size: 24px;
+      margin-bottom: 20px;
+    }
+
+    #login-screen input {
+      width: 80%; /* 調整為較窄的寬度 */
+      padding: 10px;
+      margin-bottom: 10px;
+      border: 1px solid #ccc;
+      border-radius: 5px;
+    }
+
+
+    #login-screen button {
+      width: 100%;
+      padding: 10px;
+      background-color: #9ABBDC;
+      color: white;
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+      font-size: 16px;
+    }
+
+    #login-screen button:hover {
+      background-color: #45a049;
+    }
+    #game-screen canvas {
+      border: 5px solid #000; /* 增加畫布的邊框 */
+      border-radius: 10px; /* 邊框圓角 */
+    }
+
     .color-btn {
       width: 30px;
       height: 30px;
@@ -20,11 +69,13 @@
       border-radius: 50%;
       cursor: pointer;
     }
+    
     #brush-icon {
       width: 30px;
       height: 30px;
       margin-left: 20px;
     }
+
     #tool-options {
       margin-top: 10px;
     }
@@ -58,7 +109,6 @@
       <button class="color-btn" id="yellow" style="background-color: yellow;"></button>
       <button class="color-btn" id="green" style="background-color: green;"></button>
       <button class="color-btn" id="black" style="background-color: black;"></button>
-      
     </div>
 
     <!-- 工具選擇 -->
