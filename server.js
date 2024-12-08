@@ -61,7 +61,7 @@ io.on('connection', (socket) => {
     const drawerIndex = Math.floor(Math.random() * room.players.length);
     room.drawer = room.players[drawerIndex];
     // 隨機選擇題目
-    const words = ['apple', 'banana', 'car', 'dog', 'cat', 'tree', 'house', 'sun', 'moon', 'flower'];
+    const words = ['蘋果', '香蕉', '汽車', '狗', '貓', '樹', '房子', '太陽', '月亮', '花'];
     room.word = words[Math.floor(Math.random() * words.length)];
 
     // 發送遊戲開始的訊息，並且給畫家題目
