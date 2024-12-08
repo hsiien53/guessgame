@@ -1,3 +1,4 @@
+//client.js//
 const socket = io();
 
 let currentColor = 'black'; // 預設畫筆顏色是黑色
@@ -63,6 +64,29 @@ socket.on('gameStarted', ({ drawer, word }) => {
     document.getElementById('word-to-draw').innerText = `你的題目是：${word}`; // 顯示畫家的題目
     enableDrawing(); // 只有畫家能畫
     document.getElementById('clear-btn').style.display = 'block'; // 顯示清除畫布按鈕
+    // 顯示畫畫工具
+    document.getElementById('tool-options').style.display = 'block';
+    document.getElementById('color-palette').style.display = 'block';
+  } else {
+    document.getElementById('word-to-draw').innerText = ''; // 其他玩家看不到題目
+    disableDrawing(); // 禁止其他玩家作畫
+    document.getElementById('clear-btn').style.display = 'none'; // 隱藏清除畫布按鈕
+    // 隱藏畫畫工具
+    document.getElementById('tool-options').style.display = 'none';
+    document.getElementById('color-palette').style.display = 'none';
+  }
+
+  document.getElementById('room-screen').style.display = 'none'; // 隱藏房間畫面
+  document.getElementById('game-screen').style.display = 'block'; // 顯示遊戲畫面
+});
+
+/*socket.on('gameStarted', ({ drawer, word }) => {
+  alert(`${drawer.name} 是畫家，準備開始遊戲！`);
+
+  if (socket.id === drawer.id) {
+    document.getElementById('word-to-draw').innerText = `你的題目是：${word}`; // 顯示畫家的題目
+    enableDrawing(); // 只有畫家能畫
+    document.getElementById('clear-btn').style.display = 'block'; // 顯示清除畫布按鈕
   } else {
     document.getElementById('word-to-draw').innerText = ''; // 其他玩家看不到題目
     disableDrawing(); // 禁止其他玩家作畫
@@ -72,7 +96,7 @@ socket.on('gameStarted', ({ drawer, word }) => {
   document.getElementById('room-screen').style.display = 'none'; // 隱藏房間畫面
   document.getElementById('game-screen').style.display = 'block'; // 顯示遊戲畫面
 });
-
+*/
 
 
 // 顏色選擇
@@ -185,3 +209,5 @@ document.getElementById('guess-btn').addEventListener('click', () => {
 
 socket.on('correctGuess', (message) => alert(message));
 socket.on('incorrectGuess', (message) => alert(message));
+
+

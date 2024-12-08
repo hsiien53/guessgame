@@ -1,3 +1,4 @@
+<!-- index.html -->
 <!DOCTYPE html>
 <html lang="zh">
 <head>
@@ -69,7 +70,7 @@
       border-radius: 50%;
       cursor: pointer;
     }
-    
+
     #brush-icon {
       width: 30px;
       height: 30px;
@@ -103,18 +104,18 @@
     <canvas id="drawing-canvas" width="500" height="500"></canvas>
 
     <!-- 顏色選擇 -->
-    <div>
-      <button class="color-btn" id="red" style="background-color: red;"></button>
-      <button class="color-btn" id="orange" style="background-color: orange;"></button>
-      <button class="color-btn" id="yellow" style="background-color: yellow;"></button>
-      <button class="color-btn" id="green" style="background-color: green;"></button>
-      <button class="color-btn" id="black" style="background-color: black;"></button>
-    </div>
+       <div id="color-palette">
+    <button class="color-btn" id="red" style="background-color: red;"></button>
+    <button class="color-btn" id="orange" style="background-color: orange;"></button>
+    <button class="color-btn" id="yellow" style="background-color: yellow;"></button>
+    <button class="color-btn" id="green" style="background-color: green;"></button>
+    <button class="color-btn" id="black" style="background-color: black;"></button>
+  </div>
 
-    <!-- 工具選擇 -->
-    <div id="tool-options">
-      <button id="eraser-btn">橡皮擦</button>
-    </div>
+  <div id="tool-options">
+    <button id="eraser-btn">橡皮擦</button>
+  </div>
+
 
     <input id="guess-input" placeholder="猜測答案">
     <button id="guess-btn">提交猜測</button>

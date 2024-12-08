@@ -1,3 +1,4 @@
+/*server.js*/
 const express = require('express');
 const http = require('http');
 const socketIo = require('socket.io');
@@ -82,9 +83,13 @@ io.on('connection', (socket) => {
   });
 
   socket.on('colorChanged', (roomId, color) => {
-    // 當顏色變更時，廣播顏色給其他玩家
+  const room = rooms[roomId];
+  if (room && room.drawer.id === socket.id) {
+    // 當畫家變更顏色時，廣播顏色給其他玩家
     socket.to(roomId).emit('colorChanged', color);
-  });
+  }
+});
+
 
   socket.on('clearCanvas', (roomId) => {
     const room = rooms[roomId];
