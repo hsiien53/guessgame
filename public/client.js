@@ -61,6 +61,33 @@ socket.on('gameStarted', ({ drawer, word }) => {
   document.getElementById('game-screen').style.display = 'block'; // 顯示遊戲畫面
 });
 
+
+
+
+
+
+socket.on('finishDrawing', (roomId) => {
+  const room = rooms[roomId];
+  if (room) {
+    room.currentRound += 1; // 回合數加 1
+    startRound(roomId); // 開始下一回合
+  }
+});
+
+
+
+socket.on('gameEnded', (scores) => {
+  alert('遊戲結束！最終得分：\n' + 
+    Object.entries(scores).map(([id, score]) => `${id}: ${score}`).join('\n'));
+  location.reload(); // 結束遊戲後刷新頁面
+});
+
+
+
+
+
+
+
 /*
 
 // 顏色選擇
@@ -245,6 +272,12 @@ document.getElementById('guess-btn').addEventListener('click', () => {
     document.getElementById('guess-input').value = ''; // 清空輸入框
   }
 });
+
+
+
+
+
+
 
 socket.on('correctGuess', (message) => alert(message));
 socket.on('incorrectGuess', (message) => alert(message));
