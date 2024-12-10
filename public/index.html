@@ -1,4 +1,3 @@
-<!-- index.html -->
 <!DOCTYPE html>
 <html lang="zh">
 <head>
@@ -43,7 +42,6 @@
       border-radius: 5px;
     }
 
-
     #login-screen button {
       width: 100%;
       padding: 10px;
@@ -58,6 +56,7 @@
     #login-screen button:hover {
       background-color: #45a049;
     }
+
     #game-screen canvas {
       border: 5px solid #000; /* 增加畫布的邊框 */
       border-radius: 10px; /* 邊框圓角 */
@@ -83,11 +82,6 @@
   </style>
 </head>
 <body>
-  <audio id="background-music1" autoplay loop>
-  <source src="music/background-music1.mp3" type="audio/mpeg">
-  你的瀏覽器不支援 audio 標籤。
-</audio>
-
   <!-- 登入畫面 -->
   <div id="login-screen">
     <h1>Guess Game</h1>
@@ -109,24 +103,40 @@
     <canvas id="drawing-canvas" width="500" height="500"></canvas>
 
     <!-- 顏色選擇 -->
-       <div id="color-palette">
-    <button class="color-btn" id="red" style="background-color: red;"></button>
-    <button class="color-btn" id="orange" style="background-color: orange;"></button>
-    <button class="color-btn" id="yellow" style="background-color: yellow;"></button>
-    <button class="color-btn" id="green" style="background-color: green;"></button>
-    <button class="color-btn" id="black" style="background-color: black;"></button>
-  </div>
+    <div id="color-palette">
+      <button class="color-btn" id="red" style="background-color: red;"></button>
+      <button class="color-btn" id="orange" style="background-color: orange;"></button>
+      <button class="color-btn" id="yellow" style="background-color: yellow;"></button>
+      <button class="color-btn" id="green" style="background-color: green;"></button>
+      <button class="color-btn" id="black" style="background-color: black;"></button>
+    </div>
 
-  <div id="tool-options">
-    <button id="eraser-btn">橡皮擦</button>
-  </div>
-
+    <div id="tool-options">
+      <button id="eraser-btn">橡皮擦</button>
+    </div>
 
     <input id="guess-input" placeholder="猜測答案">
     <button id="guess-btn">提交猜測</button>
     <button id="clear-btn" style="display: none;">清除畫布</button>
   </div>
-  
 
+  <!-- 背景音樂 -->
+  <audio id="background-music" loop>
+    <source src="/static/background-music1.mp3" type="audio/mp3">
+    Your browser does not support the audio element.
+  </audio>
+
+  <script>
+    // 當按下「加入房間」按鈕時，顯示遊戲畫面並播放音樂
+    document.getElementById('join-room-btn').addEventListener('click', function() {
+      // 隱藏登入畫面並顯示遊戲畫面
+      document.getElementById('login-screen').style.display = 'none';
+      
+
+      // 播放背景音樂
+      var music = document.getElementById('background-music');
+      music.play();
+    });
+  </script>
 </body>
 </html>
