@@ -45,14 +45,16 @@ socket.on('gameStarted', ({ drawer, word }) => {
     document.getElementById('word-to-draw').innerText = `你的題目是：${word}`; // 顯示畫家的題目
     enableDrawing(); // 只有畫家能畫
     document.getElementById('clear-btn').style.display = 'block'; // 顯示清除畫布按鈕
-    // 顯示畫畫工具
+    document.getElementById('guess-input').style.display = 'none';// 顯示畫畫工具
     document.getElementById('tool-options').style.display = 'block';
+    document.getElementById('guess-btn').style.display = 'none';
     document.getElementById('color-palette').style.display = 'block';
   } else {
     document.getElementById('word-to-draw').innerText = ''; // 其他玩家看不到題目
     disableDrawing(); // 禁止其他玩家作畫
-    document.getElementById('clear-btn').style.display = 'none'; // 隱藏清除畫布按鈕
-    // 隱藏畫畫工具
+    document.getElementById('clear-btn').style.display = 'none'; 
+    document.getElementById('guess-input').style.display = 'block';// 隱藏清除畫布按鈕
+    document.getElementById('guess-btn').style.display = 'block';
     document.getElementById('tool-options').style.display = 'none';
     document.getElementById('color-palette').style.display = 'none';
   }
